@@ -251,23 +251,23 @@ export class Vici extends EventEmitter<ViciEvents> {
     return packet.payload;
   }
 
-  public listSas(): Promise<RawListSaEvent> {
+  public listSas(): Promise<Section[]> {
     return this.processListingEvent('list-sas', 'list-sa');
   }
 
-  public listPolicies(): Promise<RawListPolicyEvent> {
+  public listPolicies(): Promise<Section[]> {
     return this.processListingEvent('list-policies', 'list-policy');
   }
 
-  public listConns(): Promise<RawListConnEvent> {
+  public listConns(): Promise<Section[]> {
     return this.processListingEvent('list-conns', 'list-conn');
   }
 
-  public listCerts(): Promise<RawListCertEvent> {
+  public listCerts(): Promise<Section[]> {
     return this.processListingEvent('list-certs', 'list-cert');
   }
 
-  public listAuthority(): Promise<RawListAuthorityEvent> {
+  public listAuthority(): Promise<Section[]> {
     return this.processListingEvent('list-authorities', 'list-authority');
   }
 
@@ -349,7 +349,7 @@ export class Vici extends EventEmitter<ViciEvents> {
       }
     } catch (e) {
       this.buffer = null;
-      this.emit('error', e);
+      this.emit('error', e instanceof Error ? e : new Error('unknown'));
     }
   }
 
@@ -401,13 +401,13 @@ export class Vici extends EventEmitter<ViciEvents> {
     }
   }
 
-  private async processListingEvent<T>(command: string, eventName: EventName): Promise<T> {
+  private async processListingEvent(command: string, eventName: EventName): Promise<Section[]> {
     const subscribedBefore = this.subscribed.has(eventName);
     if (!subscribedBefore) await this.subscribe(eventName);
-    const result: T = {} as T;
+    const result: Array<Section> = [];
     const listener: (event: string, payload: Section) => void = (event, payload) => {
       if (event === eventName) {
-        Object.assign(result, payload);
+        result.push(payload);
       }
     };
     this.on('remoteEvent', listener);
