@@ -1,5 +1,5 @@
 {
-  "name": "strongswan-vici",
+  "name": "@hola.org/strongswan-vici",
   "version": "1.1.1-hola.0",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
