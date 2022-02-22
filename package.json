@@ -1,6 +1,6 @@
 {
   "name": "@hola.org/strongswan-vici",
-  "version": "1.1.1-hola.0",
+  "version": "1.1.1-hola.1",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "types/index.d.ts",
@@ -16,11 +16,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jsd0fl1/strongswan-vici"
+    "url": "https://github.com/hola/strongswan-vici"
   },
-  "homepage": "https://github.com/jsd0fl1/strongswan-vici#readme",
+  "homepage": "https://github.com/hola/strongswan-vici#readme",
   "bugs": {
-    "url": "https://github.com/jsd0fl1/strongswan-vici/issues"
+    "url": "https://github.com/hola/strongswan-vici/issues"
   },
   "keywords": [
     "vpn",
