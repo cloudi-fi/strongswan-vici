@@ -175,7 +175,7 @@ export class Vici extends EventEmitter<ViciEvents> {
   public close(): void {
     if (this.connection) {
       this.subscribed.clear();
-      this.connection.end();
+      this.connection.destroy();
       this.connection = null;
     }
   }
