@@ -1,11 +1,14 @@
-import {ElementType, PacketType, Section} from './general';
+import { ElementType, PacketType, Section } from "./general";
 
 export class ViciWriter {
   private buffer: Buffer = Buffer.alloc(512);
   private cursor: number = 0;
 
   public get packet(): Buffer {
-    const packet = Buffer.concat([new Uint8Array(4), this.buffer.subarray(0, this.cursor)]);
+    const packet = Buffer.concat([
+      new Uint8Array(4),
+      this.buffer.subarray(0, this.cursor),
+    ]);
     packet.writeUInt32BE(this.cursor);
     return packet;
   }
@@ -13,10 +16,10 @@ export class ViciWriter {
   public writePacket(type: PacketType, payload: (string | Section)[]): void {
     this.writeUInt8(type);
     for (const payloadElement of payload) {
-      if (typeof payloadElement === 'string') {
+      if (typeof payloadElement === "string") {
         this.writeShortString(payloadElement);
       } else {
-        this.writeSection(payloadElement);
+        this.writeSection(payloadElement, false);
       }
     }
   }
@@ -36,12 +39,12 @@ export class ViciWriter {
     this.cursor = this.buffer.writeUInt32BE(value, this.cursor);
   }
 
-  public writeSection(data: Section) {
+  public writeSection(data: Section, closeSection = true) {
     for (const key in data) {
       if (!data.hasOwnProperty(key)) continue;
       const value = data[key];
 
-      if (typeof value === 'string') {
+      if (typeof value === "string") {
         this.ensureLength(key.length + value.length + 4);
         this.writeUInt8(ElementType.KEY_VALUE);
         this.writeShortString(key);
@@ -57,11 +60,13 @@ export class ViciWriter {
       }
     }
 
-    this.writeUInt8(ElementType.SECTION_END);
+    if (closeSection) {
+      this.writeUInt8(ElementType.SECTION_END);
+    }
   }
 
   public writeList(data: string[]): void {
-    data.forEach(value => {
+    data.forEach((value) => {
       this.writeUInt8(ElementType.LIST_ITEM);
       this.writeLongString(value);
     });
